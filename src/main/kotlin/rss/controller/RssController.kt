@@ -8,10 +8,11 @@ import rss.view.OutputView
 
 class RssController {
     private lateinit var blogPosts: BlogPosts
+    private val rssParser = RssParser()
 
     fun run() {
         runBlocking {
-            blogPosts = RssParser.fetchAllBlogs(rssUrls)
+            blogPosts = rssParser.fetchAllBlogs(rssUrls)
         }
 
         val keyword = InputView.inputBlogKeyword()

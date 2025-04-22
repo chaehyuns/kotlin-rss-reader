@@ -1,5 +1,6 @@
 package rss.model
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-object RssParser {
+class RssParser(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
     private val urlList = setOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
     private val documentBuilder: DocumentBuilder by lazy {
@@ -19,7 +20,7 @@ object RssParser {
     }
 
     private suspend fun fetchPosts(url: String): BlogPosts =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val blogPosts = BlogPosts()
             val document = documentBuilder.parse(URL(url).openStream())
             val items = document.getElementsByTagName("item")
