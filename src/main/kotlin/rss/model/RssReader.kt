@@ -1,11 +1,9 @@
 package rss.model
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import org.w3c.dom.Element
 import java.net.URL
@@ -13,9 +11,8 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.xml.parsers.DocumentBuilderFactory
 
-class RssParser(
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+class RssReader(
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     private val urlList = setOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
@@ -42,7 +39,7 @@ class RssParser(
         }
 
     suspend fun fetchAllBlogs(urls: Set<String> = urlList): BlogPosts =
-        coroutineScope {
+        supervisorScope {
             val allPosts = BlogPosts()
 
             val results =

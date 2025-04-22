@@ -7,16 +7,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import rss.model.BlogPosts
-import rss.model.RssParser
+import rss.model.RssReader
 import rss.view.InputView
 import rss.view.OutputView
 
 class RssController {
     private var latestPosts = BlogPosts()
-    private val rssParser = RssParser()
+    private val rssReader = RssReader()
 
     fun run() = runBlocking {
-        latestPosts = rssParser.fetchAllBlogs(urls = rssUrls)
+        latestPosts = rssReader.fetchAllBlogs(urls = rssUrls)
         handleUserInput()
         startPolling()
     }
@@ -40,7 +40,7 @@ class RssController {
             var previousPosts = latestPosts
 
             while (isActive) {
-                latestPosts = rssParser.fetchAllBlogs()
+                latestPosts = rssReader.fetchAllBlogs()
                 val newPosts = latestPosts.list.minus(previousPosts.list.toSet())
                 if (newPosts.isNotEmpty()) {
                     OutputView.showSearchBlog(newPosts)
