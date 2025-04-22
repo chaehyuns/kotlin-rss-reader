@@ -11,16 +11,15 @@ import java.time.format.DateTimeFormatter
 import javax.xml.parsers.DocumentBuilderFactory
 
 object RssParser {
-    private val baseUrl = "https://techblog.woowahan.com/feed"
     private val urlList = listOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
     private val factory: DocumentBuilderFactory by lazy {
         DocumentBuilderFactory.newInstance()
     }
 
-    private suspend fun fetchPosts(url: String = baseUrl): List<BlogPost> =
+    private suspend fun fetchPosts(url: String): BlogPosts =
         withContext(Dispatchers.IO) {
-            val result = mutableListOf<BlogPost>()
+            val blogPosts = BlogPosts()
             val doc = factory.newDocumentBuilder().parse(URL(url).openStream())
             val items = doc.getElementsByTagName("item")
             val formatter = DateTimeFormatter.RFC_1123_DATE_TIME
@@ -32,18 +31,22 @@ object RssParser {
                 val pubDate = item.getElementsByTagName("pubDate").item(0).textContent
                 val date = ZonedDateTime.parse(pubDate, formatter).toLocalDate()
 
-                result.add(BlogPost(name = title, date = date, link = link))
+                blogPosts.add(BlogPost(name = title, date = date, link = link))
             }
-            result
+            blogPosts
         }
 
-    suspend fun fetchAllBlogs(urls: List<String> = urlList): List<BlogPost> =
+    suspend fun fetchAllBlogs(urls: List<String> = urlList): BlogPosts =
         coroutineScope {
-            val results =
-                urls.map { url ->
-                    async { fetchPosts(url) }
-                }
+            val allPosts = BlogPosts()
 
-            results.flatMap { it.await() }
+            val results = urls.map { url ->
+                async { fetchPosts(url) }
+            }
+
+            results.map { it.await() }
+                .forEach { allPosts += it }
+
+            allPosts
         }
 }
