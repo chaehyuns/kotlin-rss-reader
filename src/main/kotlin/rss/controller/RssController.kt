@@ -17,19 +17,20 @@ import rss.view.OutputView
 class RssController(
     private val urls: Set<String> = rssUrls,
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) {
     private var latestPosts = BlogPosts()
     private val rssReader = RssReader(ioDispatcher)
 
-    fun run(pollingTime: Long = 60 * 10 * 1000L) = runBlocking {
-        latestPosts = rssReader.fetchAllBlogs(urls)
+    fun run(pollingTime: Long = 60 * 10 * 1000L) =
+        runBlocking {
+            latestPosts = rssReader.fetchAllBlogs(urls)
 
-        val inputJob = scope.launch { handleUserInput() }
-        val pollingJob = scope.launch { startPolling(pollingTime) }
+            val inputJob = scope.launch { handleUserInput() }
+            val pollingJob = scope.launch { startPolling(pollingTime) }
 
-        joinAll(inputJob, pollingJob)
-    }
+            joinAll(inputJob, pollingJob)
+        }
 
     private fun handleUserInput() {
         while (scope.isActive) {
@@ -64,15 +65,19 @@ class RssController(
         OutputView.showSearchBlog(topPosts)
     }
 
-    private fun showKeywordSearch(keyword: String, limit: Int = 10) {
+    private fun showKeywordSearch(
+        keyword: String,
+        limit: Int = 10,
+    ) {
         val filtered = latestPosts.findKeywordLatest(keyword, limit)
         OutputView.showSearchBlog(filtered)
     }
 
     companion object {
-        private val rssUrls = setOf(
-            "https://techblog.woowahan.com/feed",
-            "https://v2.velog.io/rss/skydoves/"
-        )
+        private val rssUrls =
+            setOf(
+                "https://techblog.woowahan.com/feed",
+                "https://v2.velog.io/rss/skydoves/",
+            )
     }
 }

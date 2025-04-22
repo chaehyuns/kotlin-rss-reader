@@ -12,12 +12,11 @@ import java.time.format.DateTimeFormatter
 import javax.xml.parsers.DocumentBuilderFactory
 
 class RssReader(
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     private val urlList = setOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
-    private fun createDocumentBuilder() =
-        DocumentBuilderFactory.newInstance().newDocumentBuilder()
+    private fun createDocumentBuilder() = DocumentBuilderFactory.newInstance().newDocumentBuilder()
 
     private suspend fun fetchPosts(url: String): BlogPosts =
         withContext(ioDispatcher) {
