@@ -36,7 +36,6 @@ class RssController {
     }
 
     companion object {
-        private const val RSS_URL = "https://techblog.woowahan.com/feed"
-        private val rssUrls = listOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
+        private val rssUrls = setOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
     }
 }

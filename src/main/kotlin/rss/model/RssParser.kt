@@ -37,7 +37,7 @@ object RssParser {
             blogPosts
         }
 
-    suspend fun fetchAllBlogs(urls: List<String> = urlList): BlogPosts =
+    suspend fun fetchAllBlogs(urls: Set<String> = urlList): BlogPosts =
         coroutineScope {
             val allPosts = BlogPosts()
 
