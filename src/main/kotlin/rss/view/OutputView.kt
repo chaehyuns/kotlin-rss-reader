@@ -15,8 +15,6 @@ object OutputView {
         index: Int,
         blogPost: BlogPost,
     ) {
-        buildString {
-            appendLine("[${index + 1}] ${blogPost.name} (${blogPost.date}) - ${blogPost.link}")
-        }.let(::println)
+        println("[${index + 1}] ${blogPost.name} (${blogPost.date}) - ${blogPost.link}")
     }
 }
