@@ -41,9 +41,10 @@ object RssParser {
         coroutineScope {
             val allPosts = BlogPosts()
 
-            val results = urls.map { url ->
-                async { fetchPosts(url) }
-            }
+            val results =
+                urls.map { url ->
+                    async { fetchPosts(url) }
+                }
 
             results.map { it.await() }
                 .forEach { allPosts += it }
