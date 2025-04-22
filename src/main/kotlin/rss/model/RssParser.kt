@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object RssParser {
-    private val urlList = listOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
+    private val urlList = setOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
     private val documentBuilder: DocumentBuilder by lazy {
         DocumentBuilderFactory.newInstance().newDocumentBuilder()
