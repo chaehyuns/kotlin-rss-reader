@@ -9,7 +9,7 @@ class BlogPosts {
     }
 
     operator fun plusAssign(other: BlogPosts) {
-        this._list.addAll(other._list)
+        this._list.addAll(other.list)
     }
 
     fun takeLatest(limit: Int = 10): List<BlogPost> =
