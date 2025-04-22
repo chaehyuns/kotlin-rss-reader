@@ -39,14 +39,15 @@ class BlogPostsTest {
     @DisplayName("가장 최근의 글을 가져온다")
     fun latestPost() {
         // Given
-        val last: Int = 3
-        val blogPosts = makeBlogPosts(last)
+        val lastSize = 3
+        val keyword = "chaehyun"
+        val blogPosts = makeBlogPosts(size = lastSize, keyword = keyword)
 
         // When
         val result = blogPosts.takeLatest(limit = 1)
 
         // Then
-        result.first().name shouldBe "chaehyun$last"
+        result.first().name shouldBe "$keyword$lastSize"
     }
 
     @Test
@@ -68,7 +69,8 @@ class BlogPostsTest {
     fun findKeyword()  {
         // Given
         val size = 5
-        val blogPosts = makeBlogPosts(size)
+        val keyword = "chaehyun"
+        val blogPosts = makeBlogPosts(size = size, keyword = keyword)
 
         // When
         val result = blogPosts.findKeywordLatest("ch")
