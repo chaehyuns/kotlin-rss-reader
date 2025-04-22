@@ -8,20 +8,21 @@ import org.w3c.dom.Element
 import java.net.URL
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object RssParser {
     private val urlList = listOf("https://techblog.woowahan.com/feed", "https://v2.velog.io/rss/skydoves/")
 
-    private val factory: DocumentBuilderFactory by lazy {
-        DocumentBuilderFactory.newInstance()
+    private val documentBuilder: DocumentBuilder by lazy {
+        DocumentBuilderFactory.newInstance().newDocumentBuilder()
     }
 
     private suspend fun fetchPosts(url: String): BlogPosts =
         withContext(Dispatchers.IO) {
             val blogPosts = BlogPosts()
-            val doc = factory.newDocumentBuilder().parse(URL(url).openStream())
-            val items = doc.getElementsByTagName("item")
+            val document = documentBuilder.parse(URL(url).openStream())
+            val items = document.getElementsByTagName("item")
             val formatter = DateTimeFormatter.RFC_1123_DATE_TIME
 
             for (i in 0 until items.length) {
