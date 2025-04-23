@@ -1,18 +1,19 @@
 package rss.model
 
 class BlogPosts {
-    private val list = mutableListOf<BlogPost>()
+    private val _list = mutableListOf<BlogPost>()
+    val list: List<BlogPost> get() = _list
 
     fun add(blogPost: BlogPost) {
-        list.add(blogPost)
+        _list.add(blogPost)
     }
 
     operator fun plusAssign(other: BlogPosts) {
-        this.list.addAll(other.list)
+        this._list.addAll(other.list)
     }
 
     fun takeLatest(limit: Int = 10): List<BlogPost> =
-        list
+        _list
             .sortedByDescending { it.date }
             .take(limit)
 
@@ -21,8 +22,8 @@ class BlogPosts {
         limit: Int = 10,
         ignoreCase: Boolean = true,
     ): List<BlogPost> =
-        list
+        _list
             .filter { it.name.contains(keyword, ignoreCase = ignoreCase) }
             .sortedByDescending { it.date }
-            .take(10)
+            .take(limit)
 }
